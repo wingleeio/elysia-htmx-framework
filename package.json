@@ -1,15 +1,22 @@
 {
-  "name": "elysia-htmx-framework",
-  "version": "1.0.50",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "bun run --watch src/index.ts"
-  },
-  "dependencies": {
-    "elysia": "latest"
-  },
-  "devDependencies": {
-    "bun-types": "latest"
-  },
-  "module": "src/index.js"
+    "name": "elysia-htmx-framework",
+    "version": "1.0.50",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "start": "bun run src/index.ts",
+        "dev": "concurrently \"bun run src/development.ts\" \"bun run --watch src/index.ts\""
+    },
+    "dependencies": {
+        "@gtramontina.com/elysia-tailwind": "^2.0.0",
+        "@kitajs/html": "^4.1.0",
+        "elysia": "latest",
+        "htmx.org": "^2.0.1",
+        "swup": "^4.7.0"
+    },
+    "devDependencies": {
+        "@types/bun": "^1.1.6",
+        "concurrently": "^8.2.2",
+        "tailwindcss": "^3.4.6"
+    },
+    "module": "src/index.js"
 }
