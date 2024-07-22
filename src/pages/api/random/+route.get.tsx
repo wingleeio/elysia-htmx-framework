@@ -10,7 +10,7 @@ import { MainContext } from "@/context/MainContext";
  * */
 export const context = MainContext;
 
-export default function route() {
+export default function route(c: InferContext<typeof context>) {
     const random = Math.random() * 100;
     return <p id="random">{random}</p>;
 }

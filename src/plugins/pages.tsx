@@ -1,4 +1,4 @@
-import { Metadata, type MetadataProps } from "@/avocado/metadata";
+import { Metadata, type MetadataProps } from "@/components/metadata";
 
 import Elysia from "elysia";
 import { join } from "path";
