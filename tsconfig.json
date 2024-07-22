@@ -25,7 +25,7 @@
         "noUnusedLocals": false,
         "noUnusedParameters": false,
         "noPropertyAccessFromIndexSignature": false,
-        "types": ["@kitajs/html/htmx.d.ts", "htmx.org"],
+        "types": ["@kitajs/html/htmx.d.ts", "htmx.org", "@kitajs/html/alpine.d.ts"],
         "paths": {
             "@/*": ["./src/*"]
         }

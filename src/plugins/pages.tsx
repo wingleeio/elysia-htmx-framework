@@ -1,8 +1,9 @@
-import { Metadata, type MetadataProps } from "@/components/metadata";
+import { Metadata, type MetadataProps } from "@/components/Metadata";
 
 import Elysia from "elysia";
 import { join } from "path";
-import { watch } from "fs";
+import { watch, constants } from "fs";
+import { rm, readdir, access } from "fs/promises";
 
 export const pages = async (config: { directory?: string; metadata?: MetadataProps }) => {
     const { directory, ...rest } = Object.assign(
@@ -31,6 +32,11 @@ export const pages = async (config: { directory?: string; metadata?: MetadataPro
     const scriptMap = new Map<string, string>();
 
     const build = async () => {
+        const items = await readdir("avocado", { withFileTypes: true });
+        const itemsToDelete = items.filter((item) => item.name !== "hmr.js" && item.name !== "hmr.js.map");
+        const promises = itemsToDelete.map((item) => rm(join("avocado", item.name)));
+        await Promise.all(promises);
+
         const globals = new Bun.Glob(`src/+global.ts`);
 
         const scripts = new Bun.Glob(`${directory}/**/+script.ts`);
@@ -41,7 +47,7 @@ export const pages = async (config: { directory?: string; metadata?: MetadataPro
             entrypoints.push(path);
             scriptMap.set(
                 path.replace("+script.ts", "+page.tsx"),
-                path.replace(directory, "avocado").replace(".ts", ".js")
+                path.replace(directory, "avocado/pages").replace(".ts", ".js")
             );
         }
 
@@ -56,21 +62,24 @@ export const pages = async (config: { directory?: string; metadata?: MetadataPro
             entrypoints,
             outdir: "avocado",
             sourcemap: "external",
+            minify: true,
         });
     };
 
     await build();
 
     if (process.env.NODE_ENV === "development") {
-        watch(directory, { recursive: true }, async (_, filename) => {
+        watch(directory, { recursive: true }, async (event, filename) => {
             if (filename === "+script.ts") {
                 await build();
+                await fetch("http://localhost:10000");
             }
         });
 
         watch("src/", async (_, filename) => {
             if (filename === "+global.ts") {
                 await build();
+                await fetch("http://localhost:10000");
             }
         });
     }
@@ -107,35 +116,60 @@ export const pages = async (config: { directory?: string; metadata?: MetadataPro
     }
 
     for (const path of getRoutes.scanSync()) {
-        const url = path.replace(directory, "").replace(/\/\+route\.get\.(ts|tsx)$/, "") ?? "/";
+        const url =
+            path
+                .replace(directory, "")
+                .replace("[...]", "*")
+                .replace(/\[(.*?)\]/g, ":$1")
+                .replace(/\/\+route\.get\.(ts|tsx)$/, "") ?? "/";
         const module: Route = await import(join(process.cwd(), path));
         const context = module.context ?? new Elysia();
         plugin.use(context).get(url, module.default);
     }
 
     for (const path of postRoutes.scanSync()) {
-        const url = path.replace(directory, "").replace(/\/\+route\.post\.(ts|tsx)$/, "") ?? "/";
+        const url =
+            path
+                .replace(directory, "")
+                .replace("[...]", "*")
+                .replace(/\[(.*?)\]/g, ":$1")
+                .replace(/\/\+route\.post\.(ts|tsx)$/, "") ?? "/";
         const module: Route = await import(join(process.cwd(), path));
         const context = module.context ?? new Elysia();
         plugin.use(context).post(url, module.default);
     }
 
     for (const path of putRoutes.scanSync()) {
-        const url = path.replace(directory, "").replace(/\/\+route\.put\.(ts|tsx)$/, "") ?? "/";
+        const url =
+            path
+                .replace(directory, "")
+                .replace("[...]", "*")
+                .replace(/\[(.*?)\]/g, ":$1")
+                .replace(/\/\+route\.put\.(ts|tsx)$/, "") ?? "/";
         const module: Route = await import(join(process.cwd(), path));
         const context = module.context ?? new Elysia();
         plugin.use(context).put(url, module.default);
     }
 
     for (const path of patchRoutes.scanSync()) {
-        const url = path.replace(directory, "").replace(/\/\+route\.patch\.(ts|tsx)$/, "") ?? "/";
+        const url =
+            path
+                .replace(directory, "")
+                .replace("[...]", "*")
+                .replace(/\[(.*?)\]/g, ":$1")
+                .replace(/\/\+route\.patch\.(ts|tsx)$/, "") ?? "/";
         const module: Route = await import(join(process.cwd(), path));
         const context = module.context ?? new Elysia();
         plugin.use(context).patch(url, module.default);
     }
 
     for (const path of deleteRoutes.scanSync()) {
-        const url = path.replace(directory, "").replace(/\/\+route\.delete\.(ts|tsx)$/, "") ?? "/";
+        const url =
+            path
+                .replace(directory, "")
+                .replace("[...]", "*")
+                .replace(/\[(.*?)\]/g, ":$1")
+                .replace(/\/\+route\.delete\.(ts|tsx)$/, "") ?? "/";
         const module: Route = await import(join(process.cwd(), path));
         const context = module.context ?? new Elysia();
         plugin.use(context).delete(url, module.default);

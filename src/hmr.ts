@@ -1,4 +1,4 @@
-const DEBOUNCE_TIME = 10;
+const DEBOUNCE_TIME = 100;
 
 let RELOAD_TIMEOUT: Timer;
 

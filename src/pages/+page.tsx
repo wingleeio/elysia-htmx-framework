@@ -1,4 +1,4 @@
-import Elysia, { type InferContext } from "elysia";
+import { type InferContext } from "elysia";
 import type { Loader } from "@/plugins/pages";
 import { MainContext } from "@/context/MainContext";
 
@@ -39,25 +39,27 @@ export const loader = async (c: InferContext<typeof context>) => {
 
 export default function Page({ message }: Loader<typeof loader>) {
     return (
-        <div id="swup" class="p-4 flex flex-col gap-4 transition-main" hx-boost={true}>
-            <h1 class="font-bold text-3xl">{message}</h1>
-            <p>What is this?</p>
-            <p>This is a demo page for Avocado.</p>
-            <p id="random" hx-get="/api/random" hx-trigger="load"></p>
-            <div>
-                <a href="/about" class="bg-slate-950 text-white px-4 py-2 rounded-md hover:bg-slate-800 text-sm">
-                    About
-                </a>
-            </div>
-            <div>
-                <button
-                    hx-get="/api/random"
-                    hx-trigger="click"
-                    hx-target="#random"
-                    class="bg-slate-950 text-white px-4 py-2 rounded-md hover:bg-slate-800 text-sm"
-                >
-                    Randomize
-                </button>
+        <div id="swup" class="p-4 flex flex-col gap-4">
+            <h1 class="font-bold text-3xl transition-header">{message}</h1>
+            <div class="flex flex-col gap-4 transition-main">
+                <p>What is this?</p>
+                <p>This is a demo page for Avocado.</p>
+                <p id="random" hx-get="/api/random" hx-trigger="load"></p>
+                <div>
+                    <a href="/about" class="bg-slate-950 text-white px-4 py-2 rounded-md hover:bg-slate-800 text-sm">
+                        About
+                    </a>
+                </div>
+                <div>
+                    <button
+                        hx-get="/api/random"
+                        hx-trigger="click"
+                        hx-target="#random"
+                        class="bg-slate-950 text-white px-4 py-2 rounded-md hover:bg-slate-800 text-sm"
+                    >
+                        Randomize
+                    </button>
+                </div>
             </div>
         </div>
     );

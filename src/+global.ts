@@ -1,4 +1,7 @@
+import Alpine from "alpinejs";
 import Swup from "swup";
+
+Alpine.start();
 
 const swup = new Swup();
 

@@ -27,3 +27,15 @@ html.is-animating.to-left .transition-main {
 html.is-leaving.to-left .transition-main {
     transform: translateX(-1em);
 }
+
+.transition-header {
+    transition-property: opacity, transform;
+    transition-duration: 250ms;
+    transition-timing-function: cubic-bezier(0.77, 0, 0.175, 1);
+    transform: translateX(0);
+    opacity: 1;
+}
+
+html.is-animating .transition-header {
+    opacity: 0;
+}
